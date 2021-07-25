@@ -1,0 +1,203 @@
+{
+	"info": {
+		"_postman_id": "778854c2-3a6e-4d43-a3d7-df999e3cc744",
+		"name": "Order service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Создание заказа",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b85be0b7-03b3-4abd-9895-9662dfed7118",
+						"exec": [
+							"pm.response.to.have.status(200)",
+							"var collectionVersion = pm.response.headers.get(\"ETag\")",
+							"pm.collectionVariables.set(\"version\", collectionVersion)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"number\": \"1234\", \n\t\"price\": \"4567\"}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/order",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Создание нового заказа с передачей If-Match",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a22d2a5b-fc4c-4787-b128-7b9dbab942ac",
+						"exec": [
+							"pm.response.to.have.status(200)",
+							"var collectionVersion = pm.response.headers.get(\"ETag\")",
+							"pm.collectionVariables.set(\"ETag\", collectionVersion)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "If-Match",
+						"value": "{{version}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"number\": \"abcd\", \n\t\"price\": \"1234\"}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/order",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Попытка создания повторного заказа",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.response.to.have.status(409)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "If-Match",
+						"value": "wrong",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"number\": \"abcd\", \n\t\"price\": \"1234\"}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/order",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получение списка заказов",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.response.to.have.status(200)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "{{baseUrl}}/orders",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8f29dd8d-a61f-4451-a0fe-24bd4e90b596",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "73dcf560-c5d6-4508-8a04-33e6a95cce3e",
+				"type": "text/javascript",
+				"exec": [
+					"tests[\"[INFO] Request: \" + (('data' in request) ? request['data'] : '') ] = true;",
+					"tests[\"[INFO] Response: \" + responseBody] = true;"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "f6c9f158-0d91-43cf-b3bc-3c41f573449d",
+			"key": "version",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "59560b2d-6ad5-4f5f-ba41-2323d85f854b",
+			"key": "baseUrl",
+			"value": "http://arch.homework",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

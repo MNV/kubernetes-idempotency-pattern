@@ -1,0 +1,25 @@
+replicaCount: 2
+
+image: michaelnv/python-order-service:latest
+
+service:
+  type: NodePort
+  port: 8000
+
+postgresql:
+  enabled: true
+  postgresqlUsername: username
+  postgresqlPassword: secret
+  postgresqlDatabase: order-service
+  service:
+    port: "5432"
+
+metrics:
+  serviceMonitor:
+    enabled: true
+
+ingress:
+  enabled: true
+  hosts:
+    - host: arch.homework
+      paths: ["/"]

@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "order-service"
+spec:
+  template:
+    metadata:
+      name: "order-service"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: post-install-job
+          image: michaelnv/python-order-service:latest
+          imagePullPolicy: IfNotPresent
+          command: [ "flask",  "db", "upgrade" ]
+          envFrom:
+            - secretRef:
+                name: backend-secret
+  backoffLimit: 0
